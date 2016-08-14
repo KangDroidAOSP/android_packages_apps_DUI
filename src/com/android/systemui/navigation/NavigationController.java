@@ -59,6 +59,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import cyanogenmod.providers.CMSettings;
+
 public class NavigationController implements PackageChangedListener {
     private static final String TAG = NavigationController.class.getSimpleName();
 
@@ -184,10 +186,10 @@ public class NavigationController implements PackageChangedListener {
             resolver.registerContentObserver(
                     Settings.Secure.getUriFor(Settings.Secure.NAVIGATION_BAR_MODE), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.NAVIGATION_BAR_VISIBLE), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVBAR_LEFT_IN_LANDSCAPE), false, this, UserHandle.USER_ALL);
+                    Settings.System.DEV_FORCE_SHOW_NAVBAR), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    CMSettings.System.NAVBAR_LEFT_IN_LANDSCAPE), false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -198,15 +200,15 @@ public class NavigationController implements PackageChangedListener {
             final ContentResolver resolver = mContext.getContentResolver();
             final boolean isBarShowingNow = mBar.getNavigationBarView() != null; // sanity checks
 
-            if (uri.equals(Settings.System.getUriFor(Settings.System.NAVBAR_LEFT_IN_LANDSCAPE))
+            if (uri.equals(CMSettings.System.getUriFor(CMSettings.System.NAVBAR_LEFT_IN_LANDSCAPE))
                     && isBarShowingNow) {
-                boolean navLeftInLandscape = Settings.System.getIntForUser(resolver,
-                        Settings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0, UserHandle.USER_CURRENT) == 1;
+                boolean navLeftInLandscape = CMSettings.System.getIntForUser(resolver,
+                        CMSettings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0, UserHandle.USER_CURRENT) == 1;
                 mBar.getNavigationBarView().setLeftInLandscape(navLeftInLandscape);
-            } else if (uri.equals(Settings.Secure
-                    .getUriFor(Settings.Secure.NAVIGATION_BAR_VISIBLE))) {
-                boolean showing = Settings.Secure.getInt(resolver,
-                        Settings.Secure.NAVIGATION_BAR_VISIBLE,
+            } else if (uri.equals(Settings.System
+                    .getUriFor(Settings.System.DEV_FORCE_SHOW_NAVBAR))) {
+                boolean showing = Settings.System.getInt(resolver,
+                        Settings.System.DEV_FORCE_SHOW_NAVBAR,
                         DUActionUtils.hasNavbarByDefault(mContext) ? 1 : 0) != 0;
                 if (isBarShowingNow && !showing) {
                     mBar.getNavigationBarView().dispose();
