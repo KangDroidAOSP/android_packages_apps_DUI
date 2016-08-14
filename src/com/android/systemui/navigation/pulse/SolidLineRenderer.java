@@ -231,7 +231,7 @@ public class SolidLineRenderer extends Renderer implements ColorAnimator.ColorAn
                     Settings.Secure.getUriFor(Settings.Secure.PULSE_SOLID_FUDGE_FACTOR), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(
-                    Settings.Secure.getUriFor(Settings.Secure.LAVAMP_SOLID_SPEED), false, this,
+                    Settings.Secure.getUriFor(Settings.Secure.PULSE_LAVALAMP_SOLID_SPEED), false, this,
                     UserHandle.USER_ALL);
         }
 
@@ -252,7 +252,7 @@ public class SolidLineRenderer extends Renderer implements ColorAnimator.ColorAn
                 mPaint.setColor(mColor);
             }
             int mLavaLampSpeed = Settings.Secure.getIntForUser(resolver,
-                    Settings.Secure.LAVAMP_SOLID_SPEED, 10 * 1000,
+                    Settings.Secure.PULSE_LAVALAMP_SOLID_SPEED, 10 * 1000,
                     UserHandle.USER_CURRENT);
 	    mLavaLamp.setAnimationTime(mLavaLampSpeed);
             if (mLavaLampEnabled && mIsValidStream) {
