@@ -62,6 +62,7 @@ import com.android.systemui.navigation.smartbar.SmartBarTransitions;
 import com.android.systemui.navigation.smartbar.SmartBarView;
 import com.android.systemui.navigation.smartbar.SmartButtonView;
 import com.android.systemui.navigation.utils.SmartObserver.SmartObservable;
+import com.android.systemui.singlehandmode.SlideTouchEvent;
 import com.android.systemui.statusbar.phone.BarTransitions;
 import com.android.systemui.R;
 
@@ -125,16 +126,30 @@ public class SmartBarView extends BaseNavigationBar {
     private float mCustomAlpha;
     private static boolean mNavTintSwitch;
     public static int mIcontint;
-
+    private SlideTouchEvent mSlideTouchEvent;
+	
     public SmartBarView(Context context, boolean asDefault) {
         super(context);
         mBarTransitions = new SmartBarTransitions(this);
+        mSlideTouchEvent = new SlideTouchEvent(context);
         mScreenPinningEnabled = asDefault;
         if (!asDefault) {
             mEditor = new SmartBarEditor(this);
             mSmartObserver.addListener(mObservable);
         }
         createBaseViews();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mSlideTouchEvent.handleTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        mSlideTouchEvent.handleTouchEvent(event);
+        return super.onInterceptTouchEvent(event);
     }
 
     ArrayList<String> getCurrentSequence() {
