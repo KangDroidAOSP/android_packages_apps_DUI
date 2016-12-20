@@ -64,6 +64,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.os.UserHandle;
 
 import cyanogenmod.providers.CMSettings;
 
