@@ -135,6 +135,8 @@ public class SmartBarView extends BaseNavigationBar {
     private float mCustomAlpha;
     private static boolean mNavTintSwitch;
     public static int mIcontint;
+    private static boolean mNavTintCustomIconSwitch;
+
     private SlideTouchEvent mSlideTouchEvent;
 	
     public SmartBarView(Context context, boolean asDefault) {
@@ -225,12 +227,14 @@ public class SmartBarView extends BaseNavigationBar {
                 Settings.System.NAVBAR_TINT_SWITCH, 0) == 1;
 	mIcontint = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.NAVBAR_BUTTON_COLOR, 0xFFFFFFFF);
+        mNavTintCustomIconSwitch = Settings.System.getInt(getContext().getContentResolver(),
+                Settings.System.NAVBAR_BUTON_CUSTOM_ICON_SWITCH, 1) == 1;
         Drawable d = null;
         if (config != null) {
             // a system navigation action icon is showing, get it locally
             if (!config.hasCustomIcon()
                     && config.isSystemAction()) {
-                    d = mResourceMap.getActionDrawable(config.getActionConfig(ActionConfig.PRIMARY).getAction());
+                d = mResourceMap.getActionDrawable(config.getActionConfig(ActionConfig.PRIMARY).getAction());
             } else {
                 // custom icon or intent icon, get from library
                 d = config.getCurrentIcon(getContext());
@@ -246,9 +250,16 @@ public class SmartBarView extends BaseNavigationBar {
                 button.setImageDrawable(d);
             }
             if (mNavTintSwitch) {
-            button.setColorFilter(mIcontint, Mode.MULTIPLY);
+                button.setColorFilter(mIcontint, Mode.SRC_IN);
             } else {
-            button.setColorFilter(null);
+                button.setColorFilter(null);
+            }
+            if (!config.isSystemAction()) {
+                if (mNavTintCustomIconSwitch && mNavTintSwitch) {
+                    button.setColorFilter(mIcontint, Mode.MULTIPLY);
+                    return;
+                }
+                button.setColorFilter(null);
             }
         }
     }
